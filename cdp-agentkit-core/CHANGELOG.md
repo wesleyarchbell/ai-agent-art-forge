@@ -1,4 +1,4 @@
-# CDP Agentkit Core Changelog
+# CDP AgentKit Core Changelog
 
 ## Unreleased
 
