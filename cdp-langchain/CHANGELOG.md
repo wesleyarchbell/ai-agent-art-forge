@@ -1,4 +1,4 @@
-# CDP Agentkit.js Langchain Extension Changelog
+# CDP AgentKit.js Langchain Extension Changelog
 
 ## Unreleased
 
@@ -6,4 +6,4 @@
 
 ### Added
 
-- Initial release of the CDP Agentkit.js Langchain Extension.
+- Initial release of the CDP AgentKit.js Langchain Extension.

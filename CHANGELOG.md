@@ -1,4 +1,4 @@
-# CDP Agentkit.js Core Changelog
+# CDP AgentKit.js Core Changelog
 
 ## Unreleased
 
@@ -6,4 +6,4 @@
 
 ### Added
 
-- Initial release of the CDP Agentkit.js Core.
+- Initial release of the CDP AgentKit.js Core.

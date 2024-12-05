@@ -7,5 +7,5 @@ export * from "./actions/cdp/defi/wow";
 // Export CDP Action
 export { CdpAction } from "./actions/cdp/cdp_action";
 
-// Export CDP Agentkit
+// Export CDP AgentKit
 export { CdpAgentkit } from "./cdp_agentkit";

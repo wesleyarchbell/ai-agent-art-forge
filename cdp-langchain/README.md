@@ -1,4 +1,4 @@
-# CDP Agentkit Extension - Langchain Toolkit
+# CDP AgentKit Extension - Langchain Toolkit
 
 [![npm version](https://img.shields.io/npm/v/@coinbase/cdp-langchain.svg?style=flat-square)](https://www.npmjs.com/package/@coinbase/cdp-langchain) [![GitHub star chart](https://img.shields.io/github/stars/coinbase/cdp-agentkit?style=flat-square)](https://star-history.com/#coinbase/cdp-agentkit) [![Open Issues](https://img.shields.io/github/issues-raw/coinbase/cdp-agentkit?style=flat-square)](https://github.com/coinbase/cdp-agentkit/issues)
 
@@ -33,10 +33,10 @@ export NETWORK_ID=base-sepolia  # Optional: Defaults to base-sepolia
 
 ```typescript
 import { CdpToolkit } from "@coinbase/cdp-langchain";
-import { CdpAgentkit } from "@coinbase/cdp-agentkit-core";
+import { CdpAgentKit } from "@coinbase/cdp-agentkit-core";
 
-// Initialize CDP Agentkit
-const agentkit = CdpAgentkit.configureWithWallet();
+// Initialize CDP AgentKit
+const agentkit = CdpAgentKit.configureWithWallet();
 
 // Create toolkit
 const toolkit = new CdpToolkit(agentkit);
@@ -49,18 +49,18 @@ const tools = toolkit.getTools();
 
 The toolkit provides the following tools:
 
-1. **get_wallet_details** - Get details about the MPC Wallet
+1. **get_wallet_details** - Get details about the user's Wallet
 2. **get_balance** - Get balance for specific assets
 3. **request_faucet_funds** - Request test tokens from faucet
 4. **transfer** - Transfer assets between addresses
 5. **trade** - Trade assets (Mainnet only)
-6. **deploy_token** - Deploy ERC-20 token contracts
+6. **deploy_token** - Deploy [ERC-20](https://www.coinbase.com/learn/crypto-glossary/what-is-erc-20) token contracts
 7. **mint_nft** - Mint NFTs from existing contracts
 8. **deploy_nft** - Deploy new NFT contracts
-9. **register_basename** - Register a basename for the wallet
-10. **wow_create_token** - Deploy a token using Zora's Wow Launcher (Bonding Curve)
-11. **wow_buy_token** - Buy Zora Wow ERC20 memecoin with ETH
-12. **wow_sell_token** - Sell Zora Wow ERC20 memecoin for ETH
+9. **register_basename** - Register a [Basename](https://www.base.org/names) for the wallet
+10. **wow_create_token** - Deploy a token using [Zora's Wow Launcher](https://wow.xyz/mechanics) (Bonding Curve)
+11. **wow_buy_token** - Buy [Zora Wow](https://wow.xyz/) ERC-20 memecoin with ETH
+12. **wow_sell_token** - Sell [Zora Wow](https://wow.xyz/) ERC-20 memecoin for ETH
 
 ### Using with an Agent
 
@@ -98,7 +98,7 @@ The toolkit maintains an MPC wallet that persists between sessions:
 const walletData = await agentkit.exportWallet();
 
 // Import wallet data
-const importedAgentkit = CdpAgentkit.configureWithWallet({ cdpWalletData: walletData });
+const importedAgentKit = CdpAgentKit.configureWithWallet({ cdpWalletData: walletData });
 ```
 
 ### Network Support
@@ -123,10 +123,15 @@ Check out `examples/` for inspiration and help getting started:
 
 See [CONTRIBUTING.md](../CONTRIBUTING.md) for detailed setup instructions and contribution guidelines.
 
+## Security and bug reports
+
+The CDP AgentKit team takes security seriously.
+See [SECURITY.md](../SECURITY.md) for more information.
+
 ## Documentation
 
-- [CDP Agentkit Documentation](https://docs.cdp.coinbase.com/agentkit/docs/welcome)
-- [CDP Agentkit Langchain Extension API Reference](https://coinbase.github.io/cdp-agentkit/cdp-langchain/index.html)
+- [CDP AgentKit Documentation](https://docs.cdp.coinbase.com/agentkit/docs/welcome)
+- [API Reference: CDP AgentKit LangChain Extension](https://coinbase.github.io/cdp-agentkit-nodejs/cdp-langchain/index.html)
 
 ## License
 
