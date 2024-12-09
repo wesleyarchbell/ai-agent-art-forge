@@ -2,11 +2,25 @@
 
 ## Unreleased
 
+## [0.0.8] - 2024-12-09
+
+### Added
+
+- Twitter (X) Agentkit.
+- Twitter (X) account details action to retrieve the authenticated user's information.
+- Twitter (X) account mentions action to retrieve the authenticated user's mentions.
+- Twitter (X) post tweet action to the authenticated user's feed.
+- Twitter (X) post tweet reply action to any post.
+
 ## [0.0.7] - 2024-12-06
 
 ### Added
 
 - Improved prompts for all actions.
+
+## [0.0.6] - 2024-12-03
+
+### Fixed
 
 ## [0.0.5] - 2024-11-29
 
