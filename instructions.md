@@ -13,6 +13,9 @@
 1. Create a github repo for the project.
 2. Set the remote origin to the new repo.
 3. README.md should be updated with the instructions for the project.
-4. Update the project so '/' root project is the code from 'examples/chatbot' folder.
-
+4. Update the project so '/' root project is the code from 'trading-ai-agent' folder.
+5. Delete unused directories and files
+    1. /cdp-agentkit-core
+    2. /cdp-langchain
+    3. /twitter-langchain
 

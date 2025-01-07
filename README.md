@@ -1,60 +1,65 @@
-# CDP AgentKit.js
+# ETH Trading AI Agent Chatbot
 
-[![npm downloads](https://img.shields.io/npm/dm/@coinbase/cdp-agentkit-core?style=flat-square)](https://www.npmjs.com/package/@coinbase/cdp-agentkit-core)
-[![GitHub star chart](https://img.shields.io/github/stars/coinbase/cdp-agentkit-nodejs?style=flat-square)](https://star-history.com/#coinbase/cdp-agentkit-nodejs)
-[![Open Issues](https://img.shields.io/github/issues-raw/coinbase/cdp-agentkit-nodejs?style=flat-square)](https://github.com/coinbase/cdp-agentkit-nodejs/issues)
+This project demonstrates an AI trading agent built using Coinbase's CDP AgentKit, specifically focused on ETH trading capabilities.
 
-The **Coinbase Developer Platform (CDP) AgentKit for Node.js** simplifies bringing your AI Agents onchain. Every AI Agent deserves a crypto wallet!
+## Features
 
-## Key Features
-- **Framework-agnostic**: Common AI Agent primitives that can be used with any AI framework.
-- **LangChain.js integration**: Seamless integration with [LangChain.js](https://js.langchain.com/docs/introduction/) for easy agentic workflows. More frameworks coming soon!
-- **Twitter (X) integration**: Seamless integration of Langchain with [Twitter (X)](https://developer.twitter.com/en/docs/twitter-api) for easy agentic workflows.
-- **Support for various on-chain actions**:
+- Trade ETH onchain using Coinbase Developer Platform AgentKit
+- Interactive chatbox interface for trading commands
+- Real-time ETH price checking
+- ETH balance monitoring
+- Automated trading decisions based on user input
 
-  - Faucet for testnet funds
-  - Getting wallet details and balances
-  - Transferring and trading tokens
-  - Registering [Basenames](https://www.base.org/names)
-  - Deploying [ERC-20](https://www.coinbase.com/learn/crypto-glossary/what-is-erc-20) tokens
-  - Deploying [ERC-721](https://www.coinbase.com/learn/crypto-glossary/what-is-erc-721) tokens and minting NFTs
-  - Buying and selling [Zora Wow](https://wow.xyz/) ERC-20 coins
-  - Deploying tokens on [Zora's Wow Launcher](https://wow.xyz/mechanics) (Bonding Curve)
-  
-  Or [add your own](./CONTRIBUTING.md#adding-an-action-to-agentkit-core)!
+## Example Commands
 
-## Examples
-Check out [cdp-langchain/examples](./cdp-langchain/examples) for inspiration and help getting started!
-- [Chatbot](./cdp-langchain/examples/chatbot/README.md): Simple example of a Chatbot that can perform complex onchain interactions, using OpenAI.
+- "What's the current price of ETH?"
+- "Check my ETH balance"
+- "Execute a trade of 0.1 ETH"
+- "Monitor ETH price movements"
 
-## Repository Structure
-CDP AgentKit Node.js is organized as a [monorepo](https://en.wikipedia.org/wiki/Monorepo) that contains multiple packages.
+## Requirements
 
-### @coinbase/cdp-agentkit-core
-Core primitives and framework-agnostic tools that are meant to be composable and used via CDP AgentKit framework extensions (ie, `cdp-langchain`).
-See [CDP AgentKit Core](./cdp-agentkit-core/README.md) to get started!
+- Node.js 18+
+- [CDP API Key](https://portal.cdp.coinbase.com/access/api)
+- [OpenAI API Key](https://platform.openai.com/docs/quickstart#create-and-export-an-api-key)
 
-### @coinbase/cdp-langchain
-LangChain.js Toolkit extension of CDP AgentKit. Enables agentic workflows to interact with onchain actions.
-See [CDP LangChain](./cdp-langchain/README.md) to get started!
+### Checking Node Version
 
-### @coinbasetwitter-langchain
-Langchain Toolkit extension for Twitter (X). Enables agentic workflows to interact with Twitter, such as to post a tweet.
-See [Twitter Langchain](./twitter-langchain/README.md) to get started!
+Before using the example, ensure that you have the correct version of Node.js installed. The example requires Node.js 18 or higher. You can check your Node version by running:
 
-## Contributing
-CDP AgentKit welcomes community contributions.
-See [CONTRIBUTING.md](CONTRIBUTING.md) for more information.
+```bash
+node --version
+npm --version
+```
 
-## Security and bug reports
-The CDP AgentKit team takes security seriously.
-See [SECURITY.md](SECURITY.md) for more information.
+## Installation
 
-## Documentation
-- [CDP AgentKit Documentation](https://docs.cdp.coinbase.com/agentkit/docs/welcome)
-- [API Reference: CDP AgentKit Core](https://coinbase.github.io/cdp-agentkit-nodejs/cdp-agentkit-core/index.html)
-- [API Reference: CDP AgentKit LangChain Extension](https://coinbase.github.io/cdp-agentkit-nodejs/cdp-langchain/index.html)
-- [API Reference: CDP Agentkit Twitter Langchain Extension](https://coinbase.github.io/cdp-agentkit-nodejs/twitter-langchain/index.html)
+```bash
+npm install
+```
+
+## Configuration
+
+### Set Environment Variables
+
+Create a `.env` file with the following variables:
+- CDP_API_KEY_NAME
+- CDP_API_KEY_PRIVATE_KEY
+- OPENAI_API_KEY
+- NETWORK_ID (Defaults to `base-sepolia`)
+
+## Running the Trading Agent
+
+```bash
+npm start
+```
+
+## Development
+
+To run in development mode with auto-reload:
+```bash
+npm run dev
+```
 
 ## License
 
