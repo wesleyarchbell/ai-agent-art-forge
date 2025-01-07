@@ -1,13 +1,21 @@
-# CDP AgentKit Langchain Extension Examples - Chatbot
+# ETH Trading AI Agent Chatbot
 
-This example demonstrates an agent setup as a terminal style chatbot with access to the full set of CDP AgentKit actions.
+This project demonstrates an AI trading agent built using Coinbase's CDP AgentKit, specifically focused on ETH trading capabilities.
 
-## Ask the chatbot to engage in the Web3 ecosystem!
+## Features
 
-- "Transfer a portion of your ETH to john2879.base.eth"
-- "Deploy an NFT that will go super viral!"
-- "Choose a name for yourself and register a Basename for your wallet"
-- "Deploy an ERC-20 token with total supply 1 billion"
+- Trade ETH onchain using Coinbase Developer Platform AgentKit
+- Interactive chatbox interface for trading commands
+- Real-time ETH price checking
+- ETH balance monitoring
+- Automated trading decisions based on user input
+
+## Example Commands
+
+- "What's the current price of ETH?"
+- "Check my ETH balance"
+- "Execute a trade of 0.1 ETH"
+- "Monitor ETH price movements"
 
 ## Requirements
 
@@ -30,18 +38,27 @@ npm --version
 npm install
 ```
 
-## Run the Chatbot
+## Configuration
 
-### Set ENV Vars
+### Set Environment Variables
 
-- Ensure the following ENV Vars are set:
-  - "CDP_API_KEY_NAME"
-  - "CDP_API_KEY_PRIVATE_KEY"
-  - "OPENAI_API_KEY"
-  - "NETWORK_ID" (Defaults to `base-sepolia`)
+Create a `.env` file with the following variables:
+- CDP_API_KEY_NAME
+- CDP_API_KEY_PRIVATE_KEY
+- OPENAI_API_KEY
+- NETWORK_ID (Defaults to `base-sepolia`)
+
+## Running the Trading Agent
 
 ```bash
 npm start
+```
+
+## Development
+
+To run in development mode with auto-reload:
+```bash
+npm run dev
 ```
 
 ## License
