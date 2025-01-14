@@ -10,17 +10,29 @@
     "interactive": "NODE_OPTIONS='--no-warnings' ts-node ./art-forge.ts --interactive"
   },
   "dependencies": {
-    "@coinbase/cdp-agentkit-core": "^0.0.8",
-    "@coinbase/cdp-langchain": "^0.0.9",
-    "@langchain/langgraph": "^0.2.21",
-    "@langchain/openai": "^0.3.14",
     "@langchain/core": "^0.3.19",
+    "@langchain/openai": "^0.3.14",
+    "@openzeppelin/contracts": "^5.0.1",
+    "@pinata/sdk": "^2.1.0",
     "axios": "^1.6.7",
     "dotenv": "^16.4.5",
+    "ethers": "^6.11.1",
+    "openai": "^4.28.0",
+    "sharp": "^0.33.2",
+    "twitter-api-v2": "^1.16.0",
+    "web3": "^4.5.0",
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@types/node": "^20.11.19",
+    "@types/sharp": "^0.32.0",
+    "@typescript-eslint/eslint-plugin": "^7.0.1",
+    "@typescript-eslint/parser": "^7.0.1",
+    "eslint": "^8.56.0",
+    "hardhat": "^2.20.1",
     "nodemon": "^3.1.0",
-    "ts-node": "^10.9.2"
+    "prettier": "^3.2.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
   }
 }
