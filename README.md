@@ -1,66 +1,118 @@
-# ETH Trading AI Agent Chatbot
+# AI NFT Creator & Promoter
 
-This project demonstrates an AI trading agent built using Coinbase's CDP AgentKit, specifically focused on ETH trading capabilities.
+An autonomous AI agent that creates, publishes, and promotes NFT artwork using AI generation and social media integration.
 
 ## Features
 
-- Trade ETH onchain using Coinbase Developer Platform AgentKit
-- Interactive chatbox interface for trading commands
-- Real-time ETH price checking
-- ETH balance monitoring
-- Automated trading decisions based on user input
+- **AI Art Generation**
+  - Creates unique artwork using stable diffusion or similar AI models
+  - Generates varied art styles and themes
+  - Ensures uniqueness and originality of each piece
 
-## Example Commands
+- **NFT Publishing**
+  - Automatically mints NFTs on selected blockchain (Ethereum/Base)
+  - Handles metadata creation and IPFS storage
+  - Sets pricing based on market analysis
+  - Manages gas fees and transaction timing
 
-- "What's the current price of ETH?"
-- "Check my ETH balance"
-- "Execute a trade of 0.1 ETH"
-- "Monitor ETH price movements"
+- **Social Media Integration**
+  - Automated Twitter posting of new NFT releases
+  - Engagement with NFT community
+  - Analytics tracking for social performance
+  - Hashtag optimization
 
 ## Requirements
 
-- Node.js 18+
-- [CDP API Key](https://portal.cdp.coinbase.com/access/api)
-- [OpenAI API Key](https://platform.openai.com/docs/quickstart#create-and-export-an-api-key)
+- Node.js v18 or higher
+- OpenAI API key (for art generation)
+- Twitter Developer API credentials
+- Ethereum/Base wallet with funds for minting
+- IPFS account (e.g., Pinata) for metadata storage
 
-### Checking Node Version
+## Environment Variables
 
-Before using the example, ensure that you have the correct version of Node.js installed. The example requires Node.js 18 or higher. You can check your Node version by running:
+Create a `.env` file with the following:
 
-```bash
-node --version
-npm --version
+```env
+# API Keys
+OPENAI_API_KEY=your_openai_api_key
+TWITTER_API_KEY=your_twitter_api_key
+TWITTER_API_SECRET=your_twitter_api_secret
+TWITTER_ACCESS_TOKEN=your_twitter_access_token
+TWITTER_ACCESS_SECRET=your_twitter_access_secret
+
+# Blockchain Configuration
+NETWORK_ID=base-sepolia  # or ethereum, base for mainnet
+WALLET_PRIVATE_KEY=your_wallet_private_key
+
+# IPFS Configuration
+IPFS_API_KEY=your_ipfs_api_key
+IPFS_API_SECRET=your_ipfs_api_secret
 ```
 
 ## Installation
 
 ```bash
+# Install dependencies
 npm install
+
+# Build the project
+npm run build
 ```
+
+## Usage
+
+```bash
+# Start the NFT creator in autonomous mode
+npm start
+
+# Or run in interactive mode
+npm run interactive
+```
+
+## Modes
+
+1. **Autonomous Mode**
+   - Continuously generates and publishes NFTs
+   - Handles social media promotion
+   - Monitors sales and engagement
+
+2. **Interactive Mode**
+   - Manual control over art generation
+   - Preview before publishing
+   - Custom social media messages
 
 ## Configuration
 
-### Set Environment Variables
+Adjust settings in `config.json`:
+- Art generation parameters
+- NFT pricing strategy
+- Publishing frequency
+- Social media posting schedule
 
-Create a `.env` file with the following variables:
-- CDP_API_KEY_NAME
-- CDP_API_KEY_PRIVATE_KEY
-- OPENAI_API_KEY
-- NETWORK_ID (Defaults to `base-sepolia`)
+## Safety Features
 
-## Running the Trading Agent
+- Rate limiting for API calls
+- Gas price monitoring
+- Duplicate art detection
+- Content moderation
+- Error handling and recovery
 
-```bash
-npm start
-```
+## Contributing
 
-## Development
-
-To run in development mode with auto-reload:
-```bash
-npm run dev
-```
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
 ## License
 
-Apache-2.0
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+- OpenAI for art generation capabilities
+- Twitter API for social integration
+- Ethereum/Base network for NFT functionality
+- IPFS/Pinata for decentralized storage

@@ -1,16 +1,13 @@
 {
-  "name": "@coinbase/cdp-langchain-chatbot-example",
-  "description": "CDP Agentkit Node.js SDK Chatbot Example",
+  "name": "ai-agent-art-forge",
   "version": "1.0.0",
-  "author": "Coinbase Inc.",
-  "license": "Apache-2.0",
+  "description": "An autonomous AI agent that creates, publishes, and promotes NFT artwork using AI generation and social media integration",
+  "main": "art-forge.ts",
   "scripts": {
-    "start": "NODE_OPTIONS='--no-warnings' ts-node ./chatbot.ts",
-    "dev": "nodemon ./chatbot.ts",
-    "lint": "eslint -c .eslintrc.json *.ts",
-    "lint-fix": "eslint -c .eslintrc.json *.ts --fix",
-    "format": "prettier -c .prettierrc --write \"**/*.{ts,js,cjs,json,md}\"",
-    "format-check": "prettier -c .prettierrc --check \"**/*.{ts,js,cjs,json,md}\""
+    "start": "NODE_OPTIONS='--no-warnings' ts-node ./art-forge.ts",
+    "dev": "NODE_OPTIONS='--no-warnings' nodemon --exec ts-node ./art-forge.ts",
+    "build": "tsc",
+    "interactive": "NODE_OPTIONS='--no-warnings' ts-node ./art-forge.ts --interactive"
   },
   "dependencies": {
     "@coinbase/cdp-agentkit-core": "^0.0.8",
@@ -18,7 +15,7 @@
     "@langchain/langgraph": "^0.2.21",
     "@langchain/openai": "^0.3.14",
     "@langchain/core": "^0.3.19",
-    
+    "axios": "^1.6.7",
     "dotenv": "^16.4.5",
     "zod": "^3.22.4"
   },
