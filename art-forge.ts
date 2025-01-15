@@ -302,48 +302,23 @@ async function chooseMode(): Promise<"chat" | "auto"> {
  */
 async function executeNFTOperation(agent: any, config: any, toolkit: CdpToolkit) {
   try {
-    const tools = toolkit.getTools();
-    const requestFaucetTool = tools.find(tool => tool.name === 'request_faucet_funds');
-    const deployNftTool = tools.find(tool => tool.name === 'deploy_nft');
-    const mintNftTool = tools.find(tool => tool.name === 'mint_nft');
+    console.log("Starting NFT operation using agent...");
+    const message = `Please help me with the following NFT operation:
+1. Check my wallet balance
+2. Request faucet funds if needed
+3. Deploy a new NFT contract named "ArtForge" with symbol "ARTF"
+4. Mint an NFT from the deployed contract to my wallet address
 
-    if (!deployNftTool || !mintNftTool || !requestFaucetTool) {
-      console.error("Required tools not found in toolkit");
-      return false;
-    }
+Please handle each step in sequence and let me know the results.`;
 
-    // Request faucet funds
-    console.log("Requesting faucet funds...");
-    const faucetResult = await requestFaucetTool.call({});
-    console.log("Faucet Result:", faucetResult);
+    const stream = await agent.stream({ messages: [new HumanMessage(message)] }, config);
 
-    // Wait a bit for faucet transaction to complete
-    console.log("Waiting for faucet transaction to complete...");
-    await new Promise(resolve => setTimeout(resolve, 15000));
-
-    // Deploy NFT contract
-    console.log("Deploying NFT contract...");
-    const deployResult = await deployNftTool.call({
-      name: "ArtForge",
-      symbol: "ARTF",
-      baseURI: "ipfs://"
-    });
-    console.log("Contract Deployment Result:", deployResult);
-
-    // Extract contract address from the deployment result
-    const contractAddressMatch = deployResult.toString().match(/address (0x[a-fA-F0-9]{40})/);
-    const contractAddress = contractAddressMatch ? contractAddressMatch[1] : null;
-
-    if (contractAddress) {
-      // Mint NFT
-      console.log("Minting NFT...");
-      const mintResult = await mintNftTool.call({
-        contractAddress: contractAddress,
-        tokenURI: "ipfs://QmExample"
-      });
-      console.log("Minting Result:", mintResult);
-    } else {
-      console.log("Could not extract contract address from deployment result");
+    for await (const chunk of stream) {
+      if ("agent" in chunk) {
+        console.log("Agent:", chunk.agent.messages[0].content);
+      } else if ("tools" in chunk) {
+        console.log("Tool Output:", chunk.tools.messages[0].content);
+      }
     }
 
     return true;
