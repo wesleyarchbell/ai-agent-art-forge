@@ -1,19 +1,27 @@
-# AI NFT Creator & Promoter
+# AI NFT Creator & Promoter AI Agent
 
 An autonomous AI agent that creates, publishes, and promotes NFT artwork using AI generation and social media integration.
 
 ## Features
 
 - **AI Art Generation**
-  - Creates unique artwork using stable diffusion or similar AI models
-  - Generates varied art styles and themes
-  - Ensures uniqueness and originality of each piece
+  - Creates unique artwork using DALL-E 3
+  - Dynamic art styles and themes generation
+  - SHA-256 based uniqueness verification
+  - Optimized image processing (60%+ size reduction)
 
-- **NFT Publishing**
-  - Automatically mints NFTs on selected blockchain (Ethereum/Base)
-  - Handles metadata creation and IPFS storage
-  - Sets pricing based on market analysis
-  - Manages gas fees and transaction timing
+- **NFT Operations**
+  - Automated NFT contract deployment on Base
+  - Built-in CDP Agent Kit integration
+  - Intelligent wallet management
+  - Automated faucet fund requests
+
+- **Marketplace Integration**
+  - OpenSea API integration for analytics
+  - Real-time sales tracking
+  - Price monitoring and analysis
+  - Ownership transfer tracking
+  - Performance analytics reporting
 
 - **Social Media Integration**
   - Automated Twitter posting of new NFT releases
@@ -24,30 +32,28 @@ An autonomous AI agent that creates, publishes, and promotes NFT artwork using A
 ## Requirements
 
 - Node.js v18 or higher
-- OpenAI API key (for art generation)
-- Twitter Developer API credentials
-- Ethereum/Base wallet with funds for minting
-- IPFS account (e.g., Pinata) for metadata storage
+- OpenAI API key (for DALL-E and CDP Agent Kit)
+- CDP Agent Kit credentials
+- Twitter Developer API credentials (coming soon)
+- IPFS account (e.g., Pinata) (coming soon)
 
 ## Environment Variables
 
 Create a `.env` file with the following:
 
 ```env
-# API Keys
+# CDP Agent Kit Configuration
+CDP_API_KEY_NAME=your_cdp_key_name
+CDP_API_KEY_PRIVATE_KEY=your_cdp_private_key
+
+# OpenAI Configuration (for DALL-E and CDP Agent Kit)
 OPENAI_API_KEY=your_openai_api_key
-TWITTER_API_KEY=your_twitter_api_key
-TWITTER_API_SECRET=your_twitter_api_secret
-TWITTER_ACCESS_TOKEN=your_twitter_access_token
-TWITTER_ACCESS_SECRET=your_twitter_access_secret
 
-# Blockchain Configuration
+# Network Configuration
 NETWORK_ID=base-sepolia  # or ethereum, base for mainnet
-WALLET_PRIVATE_KEY=your_wallet_private_key
 
-# IPFS Configuration
-IPFS_API_KEY=your_ipfs_api_key
-IPFS_API_SECRET=your_ipfs_api_secret
+# Model Configuration
+MODEL_NAME=gpt-4o-mini
 ```
 
 ## Installation
@@ -56,47 +62,39 @@ IPFS_API_SECRET=your_ipfs_api_secret
 # Install dependencies
 npm install
 
-# Build the project
-npm run build
-```
-
-## Usage
-
-```bash
-# Start the NFT creator in autonomous mode
+# Run the agent
 npm start
-
-# Or run in interactive mode
-npm run interactive
 ```
 
 ## Modes
 
 1. **Autonomous Mode**
-   - Continuously generates and publishes NFTs
-   - Handles social media promotion
-   - Monitors sales and engagement
+   - Continuous NFT creation and minting
+   - Automated art generation with DALL-E 3
+   - Smart contract deployment and management
+   - Marketplace monitoring and analytics
 
-2. **Interactive Mode**
-   - Manual control over art generation
-   - Preview before publishing
-   - Custom social media messages
+2. **Interactive Mode (Chat)**
+   - Manual control over operations
+   - Direct interaction with CDP Agent
+   - Custom NFT deployment options
+   - Real-time status monitoring
 
-## Configuration
+## Features in Development
 
-Adjust settings in `config.json`:
-- Art generation parameters
-- NFT pricing strategy
-- Publishing frequency
-- Social media posting schedule
+- IPFS integration for decentralized storage
+- Twitter integration for social promotion
+- Advanced marketplace analytics
+- Enhanced autonomous operations
+- Safety features and rate limiting
 
-## Safety Features
+## Technical Details
 
-- Rate limiting for API calls
-- Gas price monitoring
-- Duplicate art detection
-- Content moderation
-- Error handling and recovery
+- **Art Generation**: Uses DALL-E 3 with dynamic prompts
+- **Image Processing**: Sharp for optimization
+- **Blockchain**: Base Sepolia testnet (upgradable to mainnet)
+- **Smart Contracts**: CDP Agent Kit for deployment
+- **Storage**: Local with IPFS integration coming soon
 
 ## Contributing
 
@@ -112,7 +110,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Acknowledgments
 
-- OpenAI for art generation capabilities
-- Twitter API for social integration
-- Ethereum/Base network for NFT functionality
-- IPFS/Pinata for decentralized storage
+- OpenAI for DALL-E and LLM capabilities
+- Coinbase for CDP Agent Kit
+- Base network for NFT infrastructure
+- Sharp for image optimization
