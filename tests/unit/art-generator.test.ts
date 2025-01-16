@@ -13,6 +13,17 @@ describe('ArtGenerator', () => {
         artGenerator = new ArtGenerator();
     });
 
+    afterAll(() => {
+        // Clean up any remaining test files
+        const outputDir = path.join(process.cwd(), 'generated-art');
+        if (fs.existsSync(outputDir)) {
+            const files = fs.readdirSync(outputDir);
+            files.forEach(file => {
+                fs.unlinkSync(path.join(outputDir, file));
+            });
+        }
+    });
+
     describe('generateArt', () => {
         it('should generate art with custom prompt', async () => {
             const customPrompt = 'A digital painting of a sunset over mountains';
@@ -29,7 +40,7 @@ describe('ArtGenerator', () => {
             
             // Clean up
             fs.unlinkSync(filePath);
-        }, 30000); // Increased timeout for API call
+        }, 30000); // 30 second timeout
 
         it('should generate art with random prompt', async () => {
             const filePath = await artGenerator.generateArt();
@@ -45,7 +56,7 @@ describe('ArtGenerator', () => {
             
             // Clean up
             fs.unlinkSync(filePath);
-        }, 30000);
+        }, 30000); // 30 second timeout
     });
 
     describe('verifyUniqueness', () => {
@@ -60,6 +71,6 @@ describe('ArtGenerator', () => {
             
             // Clean up
             fs.unlinkSync(filePath);
-        });
+        }, 30000); // 30 second timeout
     });
 }); 
