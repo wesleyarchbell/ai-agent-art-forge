@@ -34,8 +34,8 @@ An autonomous AI agent that creates, publishes, and promotes NFT artwork using A
 - Node.js v18 or higher
 - OpenAI API key (for DALL-E and CDP Agent Kit)
 - CDP Agent Kit credentials
-- Twitter Developer API credentials (coming soon)
-- IPFS account (e.g., Pinata) (coming soon)
+- Twitter Developer API credentials 
+- IPFS account (e.g., Pinata) 
 
 ## Environment Variables
 
