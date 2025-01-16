@@ -7,6 +7,8 @@ import { ChatOpenAI } from "@langchain/openai";
 import * as dotenv from "dotenv";
 import * as fs from "fs";
 import * as readline from "readline";
+import { IPFSService } from './services/ipfs/ipfs-service';
+import { ArtGenerator } from './services/art/art-generator';
 
 dotenv.config();
 
@@ -35,7 +37,7 @@ function validateEnvironment(): void {
     process.exit(1);
   }
 
-  const validNetworks = ["ethereum", "base", "base-sepolia"];
+  const validNetworks = ["base", "base-sepolia"];
   if (process.env.NETWORK_ID && !validNetworks.includes(process.env.NETWORK_ID)) {
     console.error(`Error: NETWORK_ID must be one of: ${validNetworks.join(", ")}`);
     process.exit(1);
@@ -302,26 +304,99 @@ async function chooseMode(): Promise<"chat" | "auto"> {
  */
 async function executeNFTOperation(agent: any, config: any, toolkit: CdpToolkit) {
   try {
-    console.log("Starting NFT operation using agent...");
-    const message = `Please help me with the following NFT operation:
-1. Check my wallet balance
-2. Request faucet funds if needed
-3. Deploy a new NFT contract named "ArtForge" with symbol "ARTF"
-4. Mint an NFT from the deployed contract to my wallet address
+    const networkId = process.env.NETWORK_ID || 'base-sepolia';
+    const network = getNetworkConfig(networkId);
+    
+    console.log(`Starting NFT operation on ${networkId}...`);
+    if (networkId === 'base-sepolia') {
+      console.log('Note: Base Sepolia is not supported on OpenSea. Use Basescan to verify NFTs.');
+      console.log('For selling NFTs, deploy to Base or Ethereum mainnet.');
+    }
+    
+    // Initialize our services
+    const ipfsService = new IPFSService();
+    const artGenerator = new ArtGenerator();
 
-Please handle each step in sequence and let me know the results.`;
+    // 1. Generate Art
+    console.log('\nGenerating artwork...');
+    const artPath = await artGenerator.generateArt();
+    console.log('Art generated successfully at:', artPath);
+
+    // 2. Upload to IPFS
+    console.log('\nUploading artwork to IPFS...');
+    const imageIpfsUrl = await ipfsService.uploadImage(artPath);
+    const imageHttpUrl = imageIpfsUrl.replace('ipfs://', 'https://nftstorage.link/ipfs/');
+    console.log('Image uploaded to IPFS:', imageIpfsUrl);
+    console.log('HTTP URL:', imageHttpUrl);
+
+    // 3. Create metadata
+    console.log('\nCreating NFT metadata...');
+    const metadata = await createNFTMetadata(imageHttpUrl, 'A mesmerizing digital artwork exploring the intersection of technology and art');
+    console.log('Metadata created');
+
+    // 4. Use the agent to deploy contract and mint NFT
+    const message = `Please help me mint an NFT using these steps:
+1. Check my wallet balance
+2. If balance is less than 0.01 ETH, request faucet funds
+3. Use the mint_nft tool with these parameters:
+   - name: "AI Art Forge"
+   - symbol: "AIAF"
+   - description: "AI-generated artwork collection"
+   - recipient: my current wallet address
+   - contract_type: "ERC721"
+   - image_uri: "${imageIpfsUrl}"
+   - token_id: "1"
+
+Please execute each step in sequence and provide transaction links. Skip the faucet request if balance is sufficient.`;
 
     const stream = await agent.stream({ messages: [new HumanMessage(message)] }, config);
+    let mintingConfirmed = false;
 
     for await (const chunk of stream) {
       if ("agent" in chunk) {
         console.log("Agent:", chunk.agent.messages[0].content);
       } else if ("tools" in chunk) {
-        console.log("Tool Output:", chunk.tools.messages[0].content);
+        const toolOutput = chunk.tools.messages[0].content;
+        console.log("Tool Output:", toolOutput);
+        
+        // Check for successful minting
+        if (toolOutput.includes("Minted NFT from contract")) {
+          const contractMatch = toolOutput.match(/contract\s+(0x[0-9a-fA-F]{40})/);
+          if (contractMatch) {
+            const contractAddress = contractMatch[1];
+            console.log(`\nNFT Contract Address: ${contractAddress}`);
+            console.log(`Block Explorer: ${network.explorer}/address/${contractAddress}`);
+            
+            if (networkId === 'base-sepolia') {
+              console.log('\nNote: OpenSea does not currently support Base Sepolia.');
+              console.log('To view your NFT on OpenSea, you will need to deploy to Base mainnet.');
+              console.log('For now, you can verify your NFT on Basescan.');
+            } else if (network.opensea) {
+              console.log(`OpenSea Link: ${network.opensea}/${contractAddress}/1`);
+            }
+            mintingConfirmed = true;
+            break;
+          }
+        }
+
+        // Check for errors and break if encountered
+        if (toolOutput.toLowerCase().includes("error") && !toolOutput.includes("Error: Tool")) {
+          console.error("Error detected in tool output:", toolOutput);
+          break;
+        }
       }
     }
 
-    return true;
+    // Only consider it successful if minting is confirmed
+    if (mintingConfirmed) {
+      console.log("\nNFT minted successfully. Waiting for indexing...");
+      console.log("Note: It may take up to 5 minutes for the NFT to appear on OpenSea");
+      await new Promise(resolve => setTimeout(resolve, 300000)); // 5 minute delay
+      return true;
+    } else {
+      console.error("\nNFT operation failed - minting not confirmed");
+      return false;
+    }
   } catch (error) {
     console.error("Error in NFT operation:", error);
     return false;
@@ -355,4 +430,59 @@ if (require.main === module) {
     console.error("Fatal error:", error);
     process.exit(1);
   });
+}
+
+interface NFTMetadata {
+    name: string;
+    description: string;
+    image: string;
+    external_url: string;
+    background_color: string;
+    attributes: {
+        trait_type: string;
+        value: string;
+    }[];
+}
+
+async function createNFTMetadata(imageUrl: string, prompt: string): Promise<NFTMetadata> {
+    // Extract CID from the full URL
+    const cid = imageUrl.split('/').pop() || '';
+    
+    // Extract meaningful style from prompt
+    const styleWords = prompt.split(' ')
+        .filter(word => word.length > 3)
+        .slice(0, 2)
+        .join(' ');
+    
+    // Simplified metadata structure that matches CDP Agent Kit's expectations
+    return {
+        name: "AI Art Forge #1",
+        description: `A unique piece of AI-generated artwork inspired by: ${prompt}`,
+        image: imageUrl, // Use the full IPFS URL
+        external_url: "https://github.com/wesleyarchbell/ai-agent-art-forge",
+        background_color: "FFFFFF",
+        attributes: [
+            { trait_type: "Collection", value: "AI Art Forge" },
+            { trait_type: "Artist", value: "AI Generated" },
+            { trait_type: "Style", value: styleWords },
+            { trait_type: "Generation", value: "1" },
+            { trait_type: "Series", value: "Genesis" }
+        ]
+    };
+}
+
+function getNetworkConfig(networkId: string) {
+  const networks = {
+    'base-sepolia': {
+      explorer: 'https://sepolia.basescan.org',
+      opensea: null, // OpenSea does not support Base Sepolia
+      faucet: true
+    },
+    'base': {
+      explorer: 'https://basescan.org',
+      opensea: 'https://opensea.io/assets/base',
+      faucet: false
+    }
+  };
+  return networks[networkId] || networks['base-sepolia'];
 }
