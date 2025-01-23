@@ -9,7 +9,7 @@ import * as fs from "fs";
 import * as readline from "readline";
 import { IPFSService } from './services/ipfs/ipfs-service';
 import { ArtGenerator } from './services/art/art-generator';
-import { TwitterService } from './services/twitter/twitter-service';
+import { TwitterService } from './services/twitter';
 
 dotenv.config();
 
