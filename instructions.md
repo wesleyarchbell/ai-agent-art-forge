@@ -116,4 +116,24 @@
     - Verify contracts ✅
     - Monitor performance ✅
 
+15. Cloud Deployment (DigitalOcean)
+    - Initial Setup
+      * Create Ubuntu 22.04 Droplet (2GB RAM)
+      * Configure SSH access
+      * Install Node.js and PM2
+    - Application Deployment
+      * Clone repository and install dependencies
+      * Set up environment variables
+      * Configure PM2 for auto-restart
+    - Security and Monitoring
+      * Configure firewall rules
+      * Set up automatic updates
+      * Enable PM2 monitoring
+      * Configure log rotation
+    - Backup and Recovery
+      * Implement wallet data backups
+      * Set up health checks
+      * Configure automatic restarts
+      * Monitor resource usage
+
 
