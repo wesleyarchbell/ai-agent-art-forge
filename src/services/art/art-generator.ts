@@ -49,17 +49,17 @@ interface ArtMetadata {
 }
 
 export class ArtGenerator {
-  async generateArt(customPrompt?: string): Promise<string> {
+  async generateArt(customPrompt?: string): Promise<{ filePath: string; prompt: string; style: string; theme: string }> {
     try {
-      const { prompt, style, theme } = customPrompt ? 
+      const promptDetails = customPrompt ? 
         { prompt: customPrompt, style: 'custom', theme: 'custom' } : 
         this.generateArtPrompt();
 
-      console.log('Generating art with prompt:', prompt);
+      console.log('Generating art with prompt:', promptDetails.prompt);
 
       const response = await openai.images.generate({
         model: "dall-e-3",
-        prompt: prompt,
+        prompt: promptDetails.prompt,
         n: 1,
         size: "1024x1024",
         response_format: 'b64_json'
@@ -79,7 +79,7 @@ export class ArtGenerator {
       }
 
       // Calculate uniqueness hash
-      const uniqueHash = this.calculateUniquenessHash(prompt, imageData);
+      const uniqueHash = this.calculateUniquenessHash(promptDetails.prompt, imageData);
       const fileName = `${uniqueHash}.png`;
       const filePath = path.join(outputDir, fileName);
 
@@ -88,7 +88,10 @@ export class ArtGenerator {
       fs.writeFileSync(filePath, optimizedImage);
 
       console.log('Art generated successfully:', filePath);
-      return filePath;
+      return { 
+        filePath,
+        ...promptDetails
+      };
     } catch (error) {
       console.error('Error generating art:', error);
       throw error;

@@ -9,6 +9,7 @@ import * as fs from "fs";
 import * as readline from "readline";
 import { IPFSService } from './services/ipfs/ipfs-service';
 import { ArtGenerator } from './services/art/art-generator';
+import { TwitterService } from './services/twitter/twitter-service';
 
 dotenv.config();
 
@@ -21,7 +22,11 @@ function validateEnvironment(): void {
   const requiredVars = [
     "OPENAI_API_KEY", 
     "CDP_API_KEY_NAME", 
-    "CDP_API_KEY_PRIVATE_KEY"
+    "CDP_API_KEY_PRIVATE_KEY",
+    "TWITTER_API_KEY",
+    "TWITTER_API_SECRET",
+    "TWITTER_ACCESS_TOKEN",
+    "TWITTER_ACCESS_SECRET"
   ];
   requiredVars.forEach(varName => {
     if (!process.env[varName]) {
@@ -51,20 +56,13 @@ function validateEnvironment(): void {
 
 validateEnvironment();
 
-// Initialize directories
-const GENERATED_ART_DIR = "generated-art";
-if (!fs.existsSync(GENERATED_ART_DIR)) {
-  fs.mkdirSync(GENERATED_ART_DIR);
-} else {
-  // Clean up any leftover files from previous runs
-  const files = fs.readdirSync(GENERATED_ART_DIR);
-  for (const file of files) {
-    fs.unlinkSync(`${GENERATED_ART_DIR}/${file}`);
-  }
-}
-
 // Configure a file to persist the agent's CDP MPC Wallet Data
 const WALLET_DATA_FILE = "wallet_data.txt";
+
+// Initialize services
+const artGenerator = new ArtGenerator();
+const ipfsService = new IPFSService();
+const twitterService = new TwitterService();
 
 /**
  * Initialize the agent with CDP Agentkit
@@ -186,30 +184,29 @@ async function runAutonomousMode() {
     
     console.log("Agent and toolkit initialized successfully");
 
-    process.stdin.setRawMode(true);
-    process.stdin.resume();
-    process.stdin.setEncoding('utf8');
+    // Only set up raw mode if we're in an interactive terminal
+    if (process.stdin.isTTY) {
+      process.stdin.setRawMode(true);
+      process.stdin.resume();
+      process.stdin.setEncoding('utf8');
 
-    process.stdin.on('data', (key: Buffer) => {
-      try {
-        const keyStr = key.toString();
-        if (keyStr === 'q') {
-          console.log("\nStopping autonomous mode...");
-          isRunning = false;
-          process.exit(0);
-        } else {
-          console.log("Invalid command. Use 'q' to quit.");
-          process.stdin.setRawMode(true);
-          process.stdin.resume();
+      process.stdin.on('data', (key: Buffer) => {
+        try {
+          const keyStr = key.toString();
+          if (keyStr === 'q') {
+            console.log("\nStopping autonomous mode...");
+            isRunning = false;
+            process.exit(0);
+          } else {
+            console.log("Invalid command. Use 'q' to quit.");
+          }
+        } catch (error) {
+          console.error("Error handling input:", error);
         }
-      } catch (error) {
-        console.error("Error handling input:", error);
-        process.stdin.setRawMode(true);
-        process.stdin.resume();
-      }
-    });
+      });
 
-    console.log("\nPress 'q' to quit");
+      console.log("\nPress 'q' to quit");
+    }
 
     while (isRunning) {
       try {
@@ -314,54 +311,50 @@ async function chooseMode(): Promise<"chat" | "auto"> {
 /**
  * Execute NFT operations using the CDP toolkit
  */
-async function executeNFTOperation(agent: any, config: any, toolkit: CdpToolkit) {
+async function executeNFTOperation(agent: any, config: any, cdpToolkit: any): Promise<boolean> {
   try {
-    const networkId = process.env.NETWORK_ID || 'base-sepolia';
-    const network = getNetworkConfig(networkId);
+    // Generate art
+    console.log("Generating new artwork...");
+    const { filePath, prompt, style, theme } = await artGenerator.generateArt();
     
-    console.log(`Starting NFT operation on ${networkId}...`);
-    if (networkId === 'base-sepolia') {
-      console.log('Note: Base Sepolia is not supported on OpenSea. Use Basescan to verify NFTs.');
-      console.log('For selling NFTs, deploy to Base or Ethereum mainnet.');
-    }
+    // Upload to IPFS
+    console.log("Uploading to IPFS...");
+    const imageUrl = await ipfsService.uploadImage(filePath);
+    const metadataUrl = await ipfsService.createAndUploadMetadata(
+      "AI Art Forge NFT",
+      prompt,
+      imageUrl,
+      [
+        { trait_type: "Style", value: style },
+        { trait_type: "Theme", value: theme },
+        { trait_type: "Generator", value: "DALL-E 3" }
+      ]
+    );
     
-    // Initialize our services
-    const ipfsService = new IPFSService();
-    const artGenerator = new ArtGenerator();
+    // Mint NFT using CDP Agent
+    console.log("Minting NFT...");
+    const stream = await agent.stream(
+      {
+        messages: [
+          new HumanMessage(
+            `I want to mint an NFT with these parameters:
+            - Token URI: ${metadataUrl}
+            - Name: AI Art Forge
+            - Symbol: AIAF
+            - Description: AI-generated artwork collection
+            
+            Please:
+            1. Check my wallet balance
+            2. Deploy the NFT contract if needed
+            3. Mint the NFT
+            4. Provide the contract address and transaction details`
+          )
+        ]
+      },
+      config
+    );
 
-    // 1. Generate Art
-    console.log('\nGenerating artwork...');
-    const artPath = await artGenerator.generateArt();
-    console.log('Art generated successfully at:', artPath);
-
-    // 2. Upload to IPFS
-    console.log('\nUploading artwork to IPFS...');
-    const imageIpfsUrl = await ipfsService.uploadImage(artPath);
-    const imageHttpUrl = imageIpfsUrl.replace('ipfs://', 'https://nftstorage.link/ipfs/');
-    console.log('Image uploaded to IPFS:', imageIpfsUrl);
-    console.log('HTTP URL:', imageHttpUrl);
-
-    // 3. Create metadata
-    console.log('\nCreating NFT metadata...');
-    const metadata = await createNFTMetadata(imageHttpUrl, 'A mesmerizing digital artwork exploring the intersection of technology and art');
-    console.log('Metadata created');
-
-    // 4. Use the agent to deploy contract and mint NFT
-    const message = `Please help me mint an NFT using these steps:
-1. Check my wallet balance
-2. If balance is less than 0.01 ETH, request faucet funds
-3. Use the mint_nft tool with these parameters:
-   - name: "AI Art Forge"
-   - symbol: "AIAF"
-   - description: "AI-generated artwork collection"
-   - recipient: my current wallet address
-   - contract_type: "ERC721"
-   - image_uri: "${imageIpfsUrl}"
-   - token_id: "1"
-
-Please execute each step in sequence and provide transaction links. Skip the faucet request if balance is sufficient.`;
-
-    const stream = await agent.stream({ messages: [new HumanMessage(message)] }, config);
+    let contractAddress: string | null = null;
     let mintingConfirmed = false;
 
     for await (const chunk of stream) {
@@ -371,57 +364,58 @@ Please execute each step in sequence and provide transaction links. Skip the fau
         const toolOutput = chunk.tools.messages[0].content;
         console.log("Tool Output:", toolOutput);
         
-        // Check for successful minting
-        if (toolOutput.includes("Minted NFT from contract")) {
-          const contractMatch = toolOutput.match(/contract\s+(0x[0-9a-fA-F]{40})/);
-          if (contractMatch) {
-            const contractAddress = contractMatch[1];
-            console.log(`\nNFT Contract Address: ${contractAddress}`);
-            console.log(`Block Explorer: ${network.explorer}/address/${contractAddress}`);
-            
-            if (networkId === 'base-sepolia') {
-              console.log('\nNote: OpenSea does not currently support Base Sepolia.');
-              console.log('To view your NFT on OpenSea, you will need to deploy to Base mainnet.');
-              console.log('For now, you can verify your NFT on Basescan.');
-            } else if (network.opensea) {
-              console.log(`OpenSea Link: ${network.opensea}/${contractAddress}/1`);
-            }
+        // Extract contract address if minting is successful
+        if (toolOutput.includes("Minted NFT") || toolOutput.includes("contract address")) {
+          const match = toolOutput.match(/0x[a-fA-F0-9]{40}/);
+          if (match) {
+            contractAddress = match[0];
             mintingConfirmed = true;
-            break;
           }
         }
+      }
+    }
 
-        // Check for errors and break if encountered
-        if (toolOutput.toLowerCase().includes("error") && !toolOutput.includes("Error: Tool")) {
-          console.error("Error detected in tool output:", toolOutput);
-          break;
+    // Post to Twitter if minting was successful
+    if (mintingConfirmed && contractAddress) {
+      console.log("Posting to Twitter/X...");
+      const tweetId = await twitterService.postNFTMint(
+        filePath,
+        imageUrl,
+        contractAddress,
+        style,
+        process.env.NETWORK_ID || "base-sepolia"
+      );
+      
+      // Wait a minute then get engagement metrics
+      setTimeout(async () => {
+        try {
+          const engagement = await twitterService.getEngagement(tweetId);
+          console.log("Twitter/X Post Engagement:", engagement);
+        } catch (error) {
+          console.error("Error getting engagement metrics:", error);
         }
-      }
+      }, 60000);
+
+      return true;
     }
 
-    // Only consider it successful if minting is confirmed
-    if (mintingConfirmed) {
-      console.log("\nNFT minted successfully. Waiting for indexing...");
-      console.log("Note: It may take up to 5 minutes for the NFT to appear on OpenSea");
-      
-      // Clean up generated art file
-      try {
-        console.log("\nCleaning up generated art file...");
-        await fs.promises.unlink(artPath);
-        console.log("Cleanup successful");
-      } catch (error) {
-        console.warn("Warning: Could not delete generated art file:", error);
-      }
-      
-      await new Promise(resolve => setTimeout(resolve, 300000)); // 5 minute delay
-      return true;
-    } else {
-      console.error("\nNFT operation failed - minting not confirmed");
-      return false;
-    }
+    return false;
   } catch (error) {
     console.error("Error in NFT operation:", error);
     return false;
+  }
+}
+
+// Helper function to extract contract address from mint result
+function extractContractAddress(mintResult: any): string | null {
+  try {
+    // This is a simple example - you'll need to adjust based on your actual mint result format
+    const resultStr = mintResult.toString();
+    const match = resultStr.match(/0x[a-fA-F0-9]{40}/);
+    return match ? match[0] : null;
+  } catch (error) {
+    console.error("Error extracting contract address:", error);
+    return null;
   }
 }
 

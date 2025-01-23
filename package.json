@@ -10,13 +10,16 @@
     "interactive": "NODE_OPTIONS='--no-warnings' ts-node ./src/art-forge.ts --interactive",
     "test:art": "ts-node tests/integration/test-art-generation.ts",
     "test:ipfs": "ts-node tests/integration/test-ipfs.ts",
+    "test:twitter": "ts-node tests/integration/test-twitter.ts",
     "test:unit": "jest",
-    "test": "npm run test:unit && npm run test:art && npm run test:ipfs"
+    "test": "npm run test:unit && npm run test:art && npm run test:ipfs && npm run test:twitter"
   },
   "jest": {
     "preset": "ts-jest",
     "testEnvironment": "node",
-    "testMatch": ["**/tests/unit/**/*.test.ts"],
+    "testMatch": [
+      "**/tests/unit/**/*.test.ts"
+    ],
     "moduleNameMapper": {
       "^@/(.*)$": "<rootDir>/src/$1"
     }
@@ -34,7 +37,7 @@
     "ethers": "^6.11.1",
     "openai": "^4.78.1",
     "sharp": "^0.33.5",
-    "twitter-api-v2": "^1.16.0",
+    "twitter-api-v2": "^1.19.0",
     "web3": "^4.5.0",
     "zod": "^3.22.4"
   },
