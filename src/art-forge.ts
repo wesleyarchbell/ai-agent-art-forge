@@ -51,6 +51,18 @@ function validateEnvironment(): void {
 
 validateEnvironment();
 
+// Initialize directories
+const GENERATED_ART_DIR = "generated-art";
+if (!fs.existsSync(GENERATED_ART_DIR)) {
+  fs.mkdirSync(GENERATED_ART_DIR);
+} else {
+  // Clean up any leftover files from previous runs
+  const files = fs.readdirSync(GENERATED_ART_DIR);
+  for (const file of files) {
+    fs.unlinkSync(`${GENERATED_ART_DIR}/${file}`);
+  }
+}
+
 // Configure a file to persist the agent's CDP MPC Wallet Data
 const WALLET_DATA_FILE = "wallet_data.txt";
 
@@ -391,6 +403,16 @@ Please execute each step in sequence and provide transaction links. Skip the fau
     if (mintingConfirmed) {
       console.log("\nNFT minted successfully. Waiting for indexing...");
       console.log("Note: It may take up to 5 minutes for the NFT to appear on OpenSea");
+      
+      // Clean up generated art file
+      try {
+        console.log("\nCleaning up generated art file...");
+        await fs.promises.unlink(artPath);
+        console.log("Cleanup successful");
+      } catch (error) {
+        console.warn("Warning: Could not delete generated art file:", error);
+      }
+      
       await new Promise(resolve => setTimeout(resolve, 300000)); // 5 minute delay
       return true;
     } else {
