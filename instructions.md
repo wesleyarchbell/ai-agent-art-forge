@@ -116,24 +116,21 @@
     - Verify contracts ✅
     - Monitor performance ✅
 
-15. Cloud Deployment (DigitalOcean)
-    - Initial Setup
+15. Cloud Deployment
+    - Docker Setup (Recommended)
+      * Create Dockerfile and docker-compose.yml ✅
+      * Configure environment variables
+      * Set up volume mounts for persistence
+      * Add health checks and auto-restart
+    - DigitalOcean Setup (Alternative)
       * Create Ubuntu 22.04 Droplet (2GB RAM)
       * Configure SSH access
-      * Install Node.js and PM2
-    - Application Deployment
-      * Clone repository and install dependencies
-      * Set up environment variables
-      * Configure PM2 for auto-restart
-    - Security and Monitoring
-      * Configure firewall rules
-      * Set up automatic updates
-      * Enable PM2 monitoring
-      * Configure log rotation
-    - Backup and Recovery
-      * Implement wallet data backups
+      * Install Docker and docker-compose
+      * Clone repository and start container
+    - Monitoring and Backup
+      * Configure log collection
       * Set up health checks
-      * Configure automatic restarts
+      * Implement data persistence
       * Monitor resource usage
 
 
