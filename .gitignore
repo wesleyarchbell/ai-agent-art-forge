@@ -89,3 +89,6 @@ api.json
 
 # JSDoc
 docs/generated-art/
+
+# Generated art files
+generated-art/

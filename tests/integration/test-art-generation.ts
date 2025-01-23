@@ -14,16 +14,16 @@ async function testArtGeneration() {
     console.log('\nTesting custom prompt generation...');
     const customPrompt = 'A digital painting of a cosmic tree with glowing leaves';
     const customArtPath = await artGenerator.generateArt(customPrompt);
-    console.log('Generated custom artwork at:', customArtPath);
+    console.log('Generated custom artwork at:', customArtPath.filePath);
     
     // Generate artwork with random prompt
     console.log('\nTesting random prompt generation...');
     const randomArtPath = await artGenerator.generateArt();
-    console.log('Generated random artwork at:', randomArtPath);
+    console.log('Generated random artwork at:', randomArtPath.filePath);
     
     // Verify uniqueness
     console.log('\nTesting uniqueness verification...');
-    const isUnique = artGenerator.verifyUniqueness(customArtPath, customPrompt);
+    const isUnique = artGenerator.verifyUniqueness(customArtPath.filePath, customPrompt);
     console.log('Artwork is unique:', isUnique);
     
     console.log('\n✅ All tests passed successfully!');

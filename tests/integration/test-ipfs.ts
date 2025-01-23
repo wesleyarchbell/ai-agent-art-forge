@@ -1,5 +1,5 @@
-import { IPFSService } from './ipfs-service';
-import { ArtGenerator } from './art-generator';
+import { IPFSService } from '../../src/services/ipfs/ipfs-service';
+import { ArtGenerator } from '../../src/services/art/art-generator';
 import dotenv from 'dotenv';
 import path from 'path';
 import fs from 'fs';
@@ -26,12 +26,12 @@ async function testIPFSIntegration() {
         // Generate test image
         console.log('\nGenerating test image...');
         const imagePrompt = 'A digital artwork of a cosmic tree with glowing leaves against a starry background';
-        const imagePath = await artGenerator.generateArt(imagePrompt);
+        const imagePath = await artGenerator.generateArt();
         console.log('✅ Test image generated successfully');
 
         // Test image upload
         console.log('\nTesting image upload...');
-        const imageIpfsUrl = await ipfsService.uploadImage(imagePath);
+        const imageIpfsUrl = await ipfsService.uploadImage(imagePath.filePath);
         console.log('✅ Image uploaded successfully');
         console.log('Image IPFS URL:', imageIpfsUrl);
 

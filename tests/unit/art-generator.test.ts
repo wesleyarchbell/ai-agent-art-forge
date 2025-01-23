@@ -30,32 +30,32 @@ describe('ArtGenerator', () => {
             const filePath = await artGenerator.generateArt(customPrompt);
             
             // Check if file exists
-            expect(fs.existsSync(filePath)).toBe(true);
+            expect(fs.existsSync(filePath.filePath)).toBe(true);
             
             // Check if file is in the correct directory
-            expect(filePath.includes('generated-art')).toBe(true);
+            expect(filePath.filePath.includes('generated-art')).toBe(true);
             
             // Check if file is a PNG
-            expect(path.extname(filePath)).toBe('.png');
+            expect(path.extname(filePath.filePath)).toBe('.png');
             
             // Clean up
-            fs.unlinkSync(filePath);
+            fs.unlinkSync(filePath.filePath);
         }, 30000); // 30 second timeout
 
         it('should generate art with random prompt', async () => {
             const filePath = await artGenerator.generateArt();
             
             // Check if file exists
-            expect(fs.existsSync(filePath)).toBe(true);
+            expect(fs.existsSync(filePath.filePath)).toBe(true);
             
             // Check if file is in the correct directory
-            expect(filePath.includes('generated-art')).toBe(true);
+            expect(filePath.filePath.includes('generated-art')).toBe(true);
             
             // Check if file is a PNG
-            expect(path.extname(filePath)).toBe('.png');
+            expect(path.extname(filePath.filePath)).toBe('.png');
             
             // Clean up
-            fs.unlinkSync(filePath);
+            fs.unlinkSync(filePath.filePath);
         }, 30000); // 30 second timeout
     });
 
@@ -66,11 +66,11 @@ describe('ArtGenerator', () => {
             const filePath = await artGenerator.generateArt(prompt);
             
             // Verify uniqueness (should be true for first image)
-            const isUnique = artGenerator.verifyUniqueness(filePath, prompt);
+            const isUnique = artGenerator.verifyUniqueness(filePath.filePath, prompt);
             expect(isUnique).toBe(true);
             
             // Clean up
-            fs.unlinkSync(filePath);
+            fs.unlinkSync(filePath.filePath);
         }, 30000); // 30 second timeout
     });
 }); 
